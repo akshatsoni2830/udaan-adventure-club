@@ -1,28 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { enquiryDb } from '@/lib/db';
+import { EnquirySchema, validateData } from '@/lib/validations';
+import { enquiryRateLimiter } from '@/lib/middleware/rateLimiter';
+import { sanitizeObject } from '@/lib/middleware/sanitize';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { name, email, phone, message } = body;
+    // Apply rate limiting (20 requests per minute for enquiries)
+    const rateLimitResponse = enquiryRateLimiter(request);
+    if (rateLimitResponse) return rateLimitResponse;
 
-    // Validate required fields
-    if (!name || !email || !message) {
+    const body = await request.json();
+    
+    // Sanitize input
+    const sanitizedBody = sanitizeObject(body);
+    
+    // Validate input
+    const validation = validateData(EnquirySchema, sanitizedBody);
+    if (!validation.success) {
+      return NextResponse.json(validation.error, { status: 400 });
+    }
+
+    const { name, email, phone, message } = validation.data;
+
+    // Check for duplicate enquiries within 5 minutes
+    const isDuplicate = await enquiryDb.checkDuplicate(email, 5);
+    if (isDuplicate) {
       return NextResponse.json(
-        { success: false, error: 'Missing required fields' },
-        { status: 400 }
+        { error: 'You have already submitted an enquiry recently. Please wait before submitting again.' },
+        { status: 429 }
       );
     }
 
-    // For now, we'll just return success since the actual WhatsApp integration
-    // is handled on the client side in ContactForm.tsx
-    // In a real implementation, you might want to:
-    // 1. Send an email notification
-    // 2. Store the enquiry in a database
-    // 3. Send a WhatsApp message via API
+    // Store enquiry in database
+    const enquiry = await enquiryDb.create({
+      name,
+      email,
+      phone,
+      message
+    });
 
-    console.log('New enquiry received:', { name, email, phone, message });
+    console.log('New enquiry received:', { id: enquiry.id, name, email });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(
+      { success: true, message: 'Enquiry submitted successfully' },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Error processing enquiry:', error);
     return NextResponse.json(

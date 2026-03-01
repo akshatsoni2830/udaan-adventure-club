@@ -66,7 +66,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Ahmedabad Adventure Club
+              Uddan Adventure Club
               </a>
             </div>
           </div>

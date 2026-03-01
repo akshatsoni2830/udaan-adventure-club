@@ -20,7 +20,7 @@ export default function ContactPage() {
     }
 
     // WhatsApp requires an international number with digits only (no +, spaces, or symbols)
-    const sanitizedNumber = String(whatsappNumber).replace(/\D+/g, '');
+    const sanitizedNumber = String(+919328891173).replace(/\D+/g, '');
     const text = `🌐 Website Enquiry\n👤 Name: ${formData.name}\n📧 Email: ${formData.email}\n📞 Phone: ${formData.phone || 'N/A'}\n💬 Message: ${formData.message}`;
     const url = `https://api.whatsapp.com/send?phone=${sanitizedNumber}&text=${encodeURIComponent(text)}`;
 
@@ -61,7 +61,7 @@ export default function ContactPage() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900"
                 required
                 placeholder="Full Name"
               />
@@ -75,7 +75,7 @@ export default function ContactPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900"
                 required
                 placeholder="Your Email"
               />
@@ -89,7 +89,7 @@ export default function ContactPage() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors "
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900"
                 placeholder="Phone Number"
               />
             </div>
@@ -102,7 +102,7 @@ export default function ContactPage() {
                 value={formData.message}
                 onChange={handleChange}
                 rows={6}
-                className="w-[120%] -ml-[10%] px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none text-gray-900"
                 required
                 placeholder="Share your dream destination, travel dates, and any specific experiences you're looking for..."
               />

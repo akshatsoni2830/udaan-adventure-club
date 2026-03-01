@@ -1,0 +1,55 @@
+// Prisma schema for Ahmedabad Adventure Club
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Package {
+  id                  Int      @id @default(autoincrement())
+  title               String
+  duration            String
+  departureCities     String   // JSON array stored as string
+  fixedDepartures     String   // JSON array stored as string
+  costDetails         String   // JSON array of {description, price}
+  inclusions          String   // JSON array stored as string
+  notes               String   // JSON array stored as string
+  itemsToCarry        String   // JSON array stored as string
+  paymentTerms        String   // JSON array stored as string
+  cancellationTerms   String   // JSON array stored as string
+  images              String   // JSON array stored as string
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Destination {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  images      String   // JSON array stored as string
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Enquiry {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  status    String   @default("new") // new, read, resolved
+  createdAt DateTime @default(now())
+  
+  @@index([email, createdAt])
+}
+
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
